@@ -1,0 +1,7 @@
+{
+  "name": "DrawPad",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
