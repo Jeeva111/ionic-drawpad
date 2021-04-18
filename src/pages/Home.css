@@ -1,0 +1,8 @@
+body {
+    overflow: hidden; /* Hide scrollbars */
+    background-color: blue;
+}
+
+.powered {
+    text-decoration:'none'
+}

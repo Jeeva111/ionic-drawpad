@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { fabric } from 'fabric';
-import { IonButton, IonCol, IonContent, IonGrid, IonHeader, IonPage, IonRow, IonText, IonTitle, IonToolbar } from '@ionic/react';
-import { GiPencilBrush, GiTexas } from 'react-icons/gi';
+import { IonButton, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { RenderUIProps, UIElement, UIElements, UIOptions } from '../components/UIElements';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -23,6 +23,10 @@ const Home: React.FC = () => {
 
     const percentageToPixel = (percent: number, pixels: number = window.screen.height) => pixels * (percent/100);
 
+    const selectOption = (opt:UIElement) => {
+        console.log(opt);
+    }
+
     return (
         <IonPage>
             <IonHeader>
@@ -34,23 +38,30 @@ const Home: React.FC = () => {
                 <IonGrid style={{padding:0}}>
                     <IonRow>
                         <IonCol size="11.4">
-                            <canvas 
-                                ref={canvasRef}
-                            />
+                            <canvas ref={canvasRef} />
                         </IonCol>
                         <IonCol style={{textAlign:"center"}}>
-                            <IonButton shape="round" size="default" fill="outline">
-                                <GiPencilBrush size={20}/>
-                            </IonButton>
-                            <IonButton shape="round" size="default" fill="outline">
-                                <GiTexas size={20}/>
-                            </IonButton>
+                            <RenderUIOptions onPress={selectOption} />
                         </IonCol>
                     </IonRow>
                 </IonGrid>
+                <IonFooter>
+                    <IonToolbar>
+                        <IonTitle size="small" slot="end">Powered by <a className="powered" href="http://fabricjs.com/" target="_blank">Fabric.JS</a></IonTitle>
+                    </IonToolbar>
+                </IonFooter>
             </IonContent>
         </IonPage>
     );
 };
+
+const RenderUIOptions: React.FC<RenderUIProps> = (props:RenderUIProps) => {
+    const { onPress } = props;
+    return (
+        <>
+        {UIOptions.map((data:UIElements) => data['element'].map((option:UIElement) => <IonButton shape="round" size="default" fill="outline" key={option['key']} onClick={()=>onPress(option)}>{option['icon']}</IonButton>))}
+        </>
+    );
+}
 
 export default Home;
