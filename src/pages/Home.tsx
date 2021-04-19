@@ -1,30 +1,47 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { fabric } from 'fabric';
 import { IonButton, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
-import { RenderUIProps, UIElement, UIElements, UIOptions } from '../components/UIElements';
+import { RenderUIProps, UIElement, UIElements, Element, SelectElement, UIOptions, defaultOption } from '../components/UIElements';
 import './Home.css';
 
 const Home: React.FC = () => {
 
     // reference canvas element
     var canvasRef = useRef<HTMLCanvasElement>(null);
-    var canvas = null;
+    var canvasObj = null;
+
+    // Local States
+    const [forceRender, setForceRender] = useState<boolean>(false);
+    const [canvas, setCanvas] = useState<fabric.Canvas|null>(null);
+    const [currElement, setCurrElement] = useState<SelectElement>(defaultOption);
+
+    // React Lifecycles
     useEffect(()=> {
         initDrawPad();
     },[])
 
+    useEffect(() => {
+    },[forceRender]);
+
     const initDrawPad = () => {
-        canvas = new fabric.Canvas(canvasRef.current!,{
+        canvasObj = new fabric.Canvas(canvasRef.current!,{
             isDrawingMode:true,
             height: percentageToPixel(84),
             width: percentageToPixel(96, window.screen.width)
         });
+        setCanvas(canvasObj);
     }
 
     const percentageToPixel = (percent: number, pixels: number = window.screen.height) => pixels * (percent/100);
 
-    const selectOption = (opt:UIElement) => {
-        console.log(opt);
+    const selectedOption = (elemIndex:number, optIndex:number, opt:UIElement) => {
+        var updateElement:any = {};
+        updateElement['selectedElement'] = elemIndex;
+        updateElement['selectedOptionIndex'] = optIndex;
+        updateElement['selectedOptionKey'] = opt['key'];
+        UIOptions[currElement['selectedElement']]['element'][currElement['selectedOptionIndex']]['isActive'] = false;
+        UIOptions[elemIndex]['element'][optIndex]['isActive'] = true;
+        setCurrElement(updateElement);
     }
 
     return (
@@ -41,7 +58,7 @@ const Home: React.FC = () => {
                             <canvas ref={canvasRef} />
                         </IonCol>
                         <IonCol style={{textAlign:"center"}}>
-                            <RenderUIOptions onPress={selectOption} />
+                            <RenderUIOptions onPress={selectedOption} />
                         </IonCol>
                     </IonRow>
                 </IonGrid>
@@ -59,7 +76,7 @@ const RenderUIOptions: React.FC<RenderUIProps> = (props:RenderUIProps) => {
     const { onPress } = props;
     return (
         <>
-        {UIOptions.map((data:UIElements) => data['element'].map((option:UIElement) => <IonButton shape="round" size="default" fill="outline" key={option['key']} onClick={()=>onPress(option)}>{option['icon']}</IonButton>))}
+        {UIOptions.map((data:UIElements,elemIndex:number) => data['element'].map((option:UIElement,optIndex:number) => <IonButton shape="round" size="default" fill={option["isActive"] ? "solid" : "outline"} key={option['key']} onClick={()=>onPress(elemIndex, optIndex, option)}>{option['icon']}</IonButton>))}
         </>
     );
 }

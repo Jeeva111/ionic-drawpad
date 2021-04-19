@@ -10,9 +10,15 @@ type UIElements = {
 type UIElement = {
     key: Element;
     icon: IconBaseProps;
+    isActive:boolean;
 }
 type RenderUIProps = {
-    onPress: (param:UIElement)=>void;
+    onPress: (elementIndex: number, optionIndex: number, param:UIElement)=>void;
+}
+type SelectElement = {
+    selectedElement: number;
+    selectedOptionIndex: number;
+    selectedOptionKey: Element;
 }
 enum Element {
     cursor,
@@ -29,39 +35,52 @@ const UIOptions:Array<UIElements> = [{
     status: true,
     element:[{
         key: Element.cursor,
-        icon:<GiArrowCursor size={20}/>
+        icon:<GiArrowCursor size={20}/>,
+        isActive:false
     }, {
         key: Element.pan,
-        icon:<MdPanTool size={20}/>
+        icon:<MdPanTool size={20}/>,
+        isActive:false
     }, {
         key: Element.move,
-        icon:<MdOpenWith size={20}/>
+        icon:<MdOpenWith size={20}/>,
+        isActive:false
     }]
 }, {
     title:"Draw",
     status: true,
     element:[{
         key: Element.pencil,
-        icon:<GiPencilBrush size={20}/>
+        icon:<GiPencilBrush size={20}/>,
+        isActive:true
     }]
 }, {
     title:"Text",
     status: true,
     element:[{
         key: Element.text,
-        icon:<MdTitle size={23}/>
+        icon:<MdTitle size={23}/>,
+        isActive:false
     }, {
         key: Element.textsize,
-        icon:<MdFormatSize size={20}/>
+        icon:<MdFormatSize size={20}/>,
+        isActive:false
     }]
 },  {
     title:"Utility",
     status: true,
     element:[{
         key: Element.palette,
-        icon:<MdPalette size={20}/>
+        icon:<MdPalette size={20}/>,
+        isActive:false
     }]
 }];
 
-export type { UIElements, UIElement, RenderUIProps };
-export { UIOptions };
+const defaultOption = {
+    selectedElement: 1,
+    selectedOptionIndex:0,
+    selectedOptionKey: Element.pencil
+}
+
+export type { UIElements, UIElement, RenderUIProps, SelectElement };
+export { UIOptions, defaultOption, Element };
