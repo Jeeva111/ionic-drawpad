@@ -8,7 +8,7 @@ const Home: React.FC = () => {
 
     // reference canvas element
     var canvasRef = useRef<HTMLCanvasElement>(null);
-    var canvasObj = null;
+    var canvasObj:fabric.Canvas;
 
     // Local States
     const [forceRender, setForceRender] = useState<boolean>(false);
@@ -41,7 +41,26 @@ const Home: React.FC = () => {
         updateElement['selectedOptionKey'] = opt['key'];
         UIOptions[currElement['selectedElement']]['element'][currElement['selectedOptionIndex']]['isActive'] = false;
         UIOptions[elemIndex]['element'][optIndex]['isActive'] = true;
+        updateFabric(opt);
         setCurrElement(updateElement);
+    }
+
+    const updateFabric = (opt:UIElement):void => {
+        
+        if(!canvasObj) { canvasObj = canvas!; }
+        
+        switch(opt['key']) {
+            case Element.cursor:
+                canvasObj.isDrawingMode = false;
+                break;
+            case Element.pencil:
+                canvasObj.isDrawingMode = true;
+                break;
+            default :
+                break;
+        }
+        setCanvas(canvasObj);
+
     }
 
     return (
