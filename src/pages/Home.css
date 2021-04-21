@@ -1,8 +1,6 @@
-body {
-    overflow: hidden; /* Hide scrollbars */
-    background-color: blue;
+canvas {
 }
 
 .powered {
-    text-decoration:'none'
+    text-decoration:'none' !important;
 }

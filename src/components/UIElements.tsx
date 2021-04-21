@@ -1,6 +1,6 @@
 import { IconBaseProps } from 'react-icons/lib';
 import { GiPencilBrush, GiArrowCursor } from 'react-icons/gi';
-import { MdTitle, MdPanTool, MdOpenWith, MdPalette, MdFormatSize } from 'react-icons/md';
+import { MdTitle, MdPanTool, MdOpenWith, MdPalette, MdFormatSize, MdDelete } from 'react-icons/md';
 
 type UIElements = {
     title: string;
@@ -24,6 +24,7 @@ enum Element {
     cursor,
     pan,
     move,
+    delete,
     pencil,
     text,
     textsize,
@@ -42,8 +43,8 @@ const UIOptions:Array<UIElements> = [{
         icon:<MdPanTool size={20}/>,
         isActive:false
     }, {
-        key: Element.move,
-        icon:<MdOpenWith size={20}/>,
+        key: Element.delete,
+        icon:<MdDelete size={20}/>,
         isActive:false
     }]
 }, {

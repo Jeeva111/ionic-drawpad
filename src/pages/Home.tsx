@@ -9,6 +9,12 @@ const Home: React.FC = () => {
     // reference canvas element
     var canvasRef = useRef<HTMLCanvasElement>(null);
     var canvasObj:fabric.Canvas;
+    var isMouseDown:boolean;
+    var panPosition:{[key:string]:any} = {
+        isDragging: false,
+        lastPosX: 0,
+        lastPosY: 0
+    }
 
     // Local States
     const [forceRender, setForceRender] = useState<boolean>(false);
@@ -29,6 +35,7 @@ const Home: React.FC = () => {
             height: percentageToPixel(84),
             width: percentageToPixel(96, window.screen.width)
         });
+        eventHandler(canvasObj);
         setCanvas(canvasObj);
     }
 
@@ -56,11 +63,61 @@ const Home: React.FC = () => {
             case Element.pencil:
                 canvasObj.isDrawingMode = true;
                 break;
+            case Element.pan:
+                canvasObj.isDrawingMode = false;
+                canvasObj.selection = false;
+                break;
             default :
                 break;
         }
         setCanvas(canvasObj);
 
+    }
+
+    const eventHandler = (canvasObj:fabric.Canvas) => {
+        canvasObj.on("mouse:down",onMouseDown);
+        canvasObj.on("mouse:move",onMouseMove);
+        canvasObj.on("mouse:wheel",onMouseWheel);
+    }
+
+    const onMouseDown = (opt:any) => {
+
+        // Pan around 
+        console.log(currElement)
+        if (currElement['selectedOptionKey'] == Element.move) {
+            panPosition['isDragging'] = true;
+            panPosition['lastPosX'] = opt.e.clientX;
+            panPosition['lastPosY'] = opt.e.clientY;
+        }
+
+    }
+
+    const onMouseMove = (opt:any) => {
+
+        if(!canvasObj) { canvasObj = canvas!; }
+        if (panPosition['isDragging']) {
+            var vpt = canvasObj.viewportTransform!;
+            vpt[4] += opt.e.clientX - panPosition['lastPosX'];
+            vpt[5] += opt.e.clientY - panPosition.lastPosY;
+            canvasObj.requestRenderAll();
+            panPosition.lastPosX = opt.e.clientX;
+            panPosition.lastPosY = opt.e.clientY;
+        }
+
+    }
+
+    const onMouseWheel = (opt: any) => {
+
+        if(!canvasObj) { canvasObj = canvas!; }
+        var delta = opt.e.deltaY;
+        var zoom = canvasObj.getZoom()!;
+        zoom *= 0.999 ** delta;
+        if (zoom > 20) zoom = 20;
+        if (zoom < 0.01) zoom = 0.01;
+        var zoomPoint = new fabric.Point(opt.e.pageX, opt.e.pageY);
+        canvasObj.zoomToPoint(zoomPoint, zoom);
+        opt.e.preventDefault();
+        opt.e.stopPropagation();
     }
 
     return (
@@ -73,8 +130,8 @@ const Home: React.FC = () => {
             <IonContent fullscreen>
                 <IonGrid style={{padding:0}}>
                     <IonRow>
-                        <IonCol size="11.4">
-                            <canvas ref={canvasRef} />
+                        <IonCol size="11">
+                            <canvas ref={canvasRef} className="canvas" />
                         </IonCol>
                         <IonCol style={{textAlign:"center"}}>
                             <RenderUIOptions onPress={selectedOption} />
