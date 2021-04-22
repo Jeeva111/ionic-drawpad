@@ -10,6 +10,7 @@ const Home: React.FC = () => {
 
     // reference canvas element
     var canvasRef = useRef<HTMLCanvasElement>(null);
+    var colorPickerRef = useRef<HTMLInputElement>(null);
     var canvasObj:fabric.Canvas;
     var panPosition:{[key:string]:any} = {
         isDragging: false,
@@ -69,12 +70,16 @@ const Home: React.FC = () => {
                 break;
             case Element.pencil:
                 canvasObj.isDrawingMode = true;
-                canvasObj.freeDrawingCursor = `url(${ cursorStyle() }) 15 15, crosshair`;
+                canvasObj.freeDrawingCursor = `url(${ getDrawCursor() }) 15 15, crosshair`;
                 drawingMode();
                 break;
             case Element.pan:
                 canvasObj.isDrawingMode = false;
                 canvasObj.defaultCursor = "grab";
+                break;
+            case Element.palette:
+                canvasObj.isDrawingMode = false;
+                colorPickerRef.current?.click();
                 break;
             default :
                 break;
@@ -139,6 +144,7 @@ const Home: React.FC = () => {
 
         // Pan around 
         if (currElementState['selectedOptionKey'] == Element.pan) {
+            canvasObj.defaultCursor = "grabbing";
             panPosition['isDragging'] = true;
             panPosition['lastPosX'] = opt.e.clientX;
             panPosition['lastPosY'] = opt.e.clientY;
@@ -150,6 +156,7 @@ const Home: React.FC = () => {
 
         // Pan around 
         if (currElementState['selectedOptionKey'] == Element.pan) {
+            canvasObj.defaultCursor = "grab";
             panPosition['isDragging'] = false;
         }
 
@@ -159,7 +166,6 @@ const Home: React.FC = () => {
 
         if(!canvasObj) { canvasObj = canvas!; }
         if (panPosition['isDragging']) {
-            canvasObj.defaultCursor = "grabbing";
             var vpt = canvasObj.viewportTransform!;
             vpt[4] += opt.e.clientX - panPosition['lastPosX'];
             vpt[5] += opt.e.clientY - panPosition.lastPosY;
@@ -200,6 +206,10 @@ const Home: React.FC = () => {
                         </IonCol>
                         <IonCol style={{textAlign:"center"}}>
                             <RenderUIOptions onPress={selectedOption} />
+                            <IonButton shape="round" size="default" fill={"outline"} key={"eky"}>
+                                <input type="color" ref={colorPickerRef} style={{display:'hidden'}}/>
+                            </IonButton>
+                            
                         </IonCol>
                     </IonRow>
                 </IonGrid>
