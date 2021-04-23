@@ -11,6 +11,7 @@ type UIElement = {
     key: Element;
     icon: IconBaseProps;
     isActive:boolean;
+    status: boolean;
 }
 type RenderUIProps = {
     onPress: (elementIndex: number, optionIndex: number, param:UIElement)=>void;
@@ -37,15 +38,18 @@ const UIOptions:Array<UIElements> = [{
     element:[{
         key: Element.cursor,
         icon:<GiArrowCursor size={20}/>,
-        isActive:false
+        isActive:false,
+        status: true
     }, {
         key: Element.pan,
         icon:<MdPanTool size={20}/>,
-        isActive:false
+        isActive:false,
+        status: true
     }, {
         key: Element.delete,
         icon:<MdDelete size={20}/>,
-        isActive:false
+        isActive:false,
+        status: true
     }]
 }, {
     title:"Draw",
@@ -53,7 +57,8 @@ const UIOptions:Array<UIElements> = [{
     element:[{
         key: Element.pencil,
         icon:<GiPencilBrush size={20}/>,
-        isActive:true
+        isActive:true,
+        status: true
     }]
 }, {
     title:"Text",
@@ -61,11 +66,13 @@ const UIOptions:Array<UIElements> = [{
     element:[{
         key: Element.text,
         icon:<MdTitle size={23}/>,
-        isActive:false
+        isActive:false,
+        status: true
     }, {
         key: Element.textsize,
         icon:<MdFormatSize size={20}/>,
-        isActive:false
+        isActive:false,
+        status: false
     }]
 },  {
     title:"Utility",
@@ -73,7 +80,8 @@ const UIOptions:Array<UIElements> = [{
     element:[{
         key: Element.palette,
         icon:<MdPalette size={20}/>,
-        isActive:false
+        isActive:false,
+        status: true
     }]
 }];
 
