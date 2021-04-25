@@ -1,0 +1,7 @@
+{
+  "name": "ionic-drawpad",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
