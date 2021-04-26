@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import { IonButton, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonIcon, IonPage, isPlatform, IonTitle, IonToolbar } from '@ionic/react';
+import { FaBeer } from 'react-icons/fa';
 import DrawingEditor from '../components/DrawingEditor';
 import './Home.css';
 
@@ -10,7 +11,7 @@ const Home: React.FC = () => {
     var drawingEditor: DrawingEditor | null = null;
 
     useEffect(() => {
-        // This method for getting correct height of the ion content element 
+        // This method for getting current height of the ion content element 
         document.onreadystatechange = () => {
             initDrawingEditor();
         };
@@ -18,6 +19,7 @@ const Home: React.FC = () => {
 
     const initDrawingEditor = () => {
         if(canvasRef) {
+            console.log(ionContentRef.current?.offsetTop);
             var canvasHeight: number = (window.innerHeight - ionContentRef.current?.offsetTop!);
             var canvasWidth: number = window.innerWidth;
             drawingEditor = new DrawingEditor(canvasRef.current!, canvasHeight, canvasWidth);
@@ -28,7 +30,12 @@ const Home: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                <IonTitle>DrawPAD</IonTitle>
+                    <IonTitle>DrawPAD</IonTitle>
+                    <IonButtons slot="primary">
+                        <IonButton>
+                            <FaBeer />
+                        </IonButton>
+                    </IonButtons>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen ref={ionContentRef}>

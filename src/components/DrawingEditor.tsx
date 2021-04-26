@@ -17,7 +17,7 @@ class DrawingEditor {
         //Instantiate a new FabricJS Canvas on the created Canvas element.
         canvasRef.height = canvasHeight;
         canvasRef.width = canvasWidth;
-        this.canvas = new fabric.Canvas(canvasRef, { selection: false });
+        this.canvas = new fabric.Canvas(canvasRef, { selection: false, allowTouchScrolling:false });
 
         this.drawers = [ new LineDrawer() ];
         
@@ -54,7 +54,6 @@ class DrawingEditor {
         });
 
         this.canvas.on('selection:created', (o) => {
-            console.log("object:selected")
             this.cursorMode = CursorMode.Select;
             //sets currently selected object
             this.object = o.target;
