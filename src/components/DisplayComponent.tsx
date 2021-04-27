@@ -1,10 +1,12 @@
+import React from "react";
+import { IonButton } from "@ionic/react";
 import DrawingEditor from "./DrawingEditor";
 import { DrawingMode } from "./Interface";
 
 class DisplayComponent {
 
     drawingMode: DrawingMode; //Line, Rectangle, Oval, etc.
-    target: HTMLDivElement; //The selector for the HTML element 
+    target: string; //The selector for the HTML element 
                     //this Component will be rendered in
     hoverText: string; //The tooltip text
     svg: string; //The SVG for the component's icon
@@ -14,7 +16,7 @@ class DisplayComponent {
                        //only used by text components.
     canvasDrawer: DrawingEditor;
 
-    constructor(mode: DrawingMode, selector: HTMLDivElement, parent: DrawingEditor, options: DisplayComponentOptions) {
+    constructor(mode: DrawingMode, selector: string, parent: DrawingEditor, options: DisplayComponentOptions) {
         this.drawingMode = mode;
         this.target = selector; 
         this.cssClass = options.classNames;
@@ -29,21 +31,8 @@ class DisplayComponent {
     //This method replaces the target HTML with the component's HTML.
     //The radio button is included to have Bootstrap use the correct styles.
     render() {
-        const ionicHtml = `<label id="" class="btn btn-primary text-light " title="${this.hoverText}">
-                        <input type="radio" name="options" autocomplete="off">
-                        ${this.iconStr()}
-                     </label>`;
-
-        this.target.replaceWith(ionicHtml);
-    }
-
-    private iconStr(): string {
-        if (this.cssClass != null) {
-            return `<i class="${this.cssClass}"></i>`;
-        }
-        else {
-            return this.svg;
-        }
+        const ionicHtml = `<IonButton onClick={selectedOption}> ${this.hoverText} </IonButton>`;
+        document.getElementById(this.target)!.replaceWith(ionicHtml);
     }
 
     //This method attaches the componentSelected event in DrawingEditor
@@ -55,10 +44,14 @@ class DisplayComponent {
         };
 
         //When clicking the <label>, fire this event.
-        // $(this.target).click(data, function () {
+        // this.target.click(data, function () {
         //     data.container.drawingMode = data.mode;
         //     data.container.componentSelected(data.target);
         // });
+    }
+
+    selectedOption(data:any) {
+        console.log(data);
     }
 
     selectedChanged(componentName: string) { }

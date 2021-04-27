@@ -14,6 +14,11 @@ enum CursorMode {
 
 type IObjects = fabric.Object | fabric.Line;
 
+type DrawAddComponent = {
+    id: string;
+    type: string;
+}[];
+
 interface IObjectDrawer {
     drawingMode: DrawingMode;
     //Makes the current object
@@ -27,5 +32,5 @@ interface IObjectDrawer {
     readonly resize: (object: IObjects, x: number, y: number)  => Promise<fabric.Object>;
 }
 
-export type { IObjectDrawer, IObjects };
+export type { IObjectDrawer, IObjects, DrawAddComponent };
 export { DrawingMode, CursorMode };

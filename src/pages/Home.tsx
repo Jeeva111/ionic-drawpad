@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { IonButton, IonButtons, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonIcon, IonPage, isPlatform, IonTitle, IonToolbar } from '@ionic/react';
-import { FaBeer } from 'react-icons/fa';
 import DrawingEditor from '../components/DrawingEditor';
+import { DrawAddComponent } from '../components/Interface';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -19,10 +19,14 @@ const Home: React.FC = () => {
 
     const initDrawingEditor = () => {
         if(canvasRef) {
-            console.log(ionContentRef.current?.offsetTop);
             var canvasHeight: number = (window.innerHeight - ionContentRef.current?.offsetTop!);
             var canvasWidth: number = window.innerWidth;
             drawingEditor = new DrawingEditor(canvasRef.current!, canvasHeight, canvasWidth);
+            const components: DrawAddComponent = [
+                { id: 'lineDisplayComponent', type: 'line' }
+            ];
+            //Add the components to the DrawingEditor, which will render them.
+            drawingEditor.addComponents(components);
         }
     }
 
@@ -32,9 +36,7 @@ const Home: React.FC = () => {
                 <IonToolbar>
                     <IonTitle>DrawPAD</IonTitle>
                     <IonButtons slot="primary">
-                        <IonButton>
-                            <FaBeer />
-                        </IonButton>
+                        <div id="lineDisplayComponent"></div>
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>
