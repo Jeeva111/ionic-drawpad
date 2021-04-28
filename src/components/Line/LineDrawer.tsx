@@ -1,7 +1,8 @@
 import { fabric } from 'fabric';
-import { DrawingMode, IObjectDrawer, IObjects } from './Interface';
+import { DrawingMode, IObjectDrawer, IObjects } from '../Interface';
+import LineDisplayComponent from "./LineDisplayComponent ";
 
-export default class LineDrawer implements IObjectDrawer {
+class LineDrawer implements IObjectDrawer {
 
     drawingMode: DrawingMode = DrawingMode.Line;
 
@@ -19,14 +20,18 @@ export default class LineDrawer implements IObjectDrawer {
         //Change the secondary point (x2, y2) of the object 
         //This resizes the object between starting point (x,y)
         //and secondary point (x2,y2), where x2 and y2 have new values.
-        object.set({
-            x2: x,
-            y2: y
-        }).setCoords();
+        if(object instanceof fabric.Line) {
+            object.set({
+                x2: x,
+                y2: y
+            }).setCoords();
 
-        //Wrap the resized object in a Promise
-        return new Promise<fabric.Object>(resolve => {
-            resolve(object);
-        });
+        }
+            //Wrap the resized object in a Promise
+            return new Promise<fabric.Object>(resolve => {
+                resolve(object);
+            });
     }
 }
+
+export { LineDrawer, LineDisplayComponent };

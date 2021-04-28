@@ -2,6 +2,7 @@ enum DrawingMode {
     Line,
     Rectangle,
     Oval,
+    Triangle,
     Text,
     Polyline,
     Path
@@ -12,7 +13,7 @@ enum CursorMode {
     Select
 }
 
-type IObjects = fabric.Object | fabric.Line;
+type IObjects = fabric.Object | fabric.Line | fabric.Rect | fabric.Ellipse | fabric.Triangle | fabric.Text | fabric.Polyline;
 
 type DrawAddComponent = {
     id: string;

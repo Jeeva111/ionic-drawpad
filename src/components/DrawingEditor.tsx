@@ -1,8 +1,12 @@
 import { fabric } from "fabric";
 import { CursorMode, DrawAddComponent, DrawingMode, IObjectDrawer, IObjects } from './Interface';
-import LineDrawer from './LineDrawer';
 import { DisplayComponent } from './DisplayComponent';
-import LineDisplayComponent from "./LineDisplayComponent ";
+import { LineDrawer, LineDisplayComponent } from './Line/LineDrawer';
+import { RectangleDrawer, RectangleDisplayComponent} from "./Rect/RectangleDrawer";
+import { OvalDrawer, OvalDisplayComponent } from "./Oval/OvalDrawer";
+import { TriangleDisplayComponent, TriangleDrawer } from "./Triangles/TriangleDrawer";
+import { TextDrawer, TextDisplayComponent } from "./Text/TextDrawer";
+import { PolylineDisplayComponent, PolylineDrawer } from "./Poly/PolylineDrawer";
 
 class DrawingEditor {
 
@@ -23,7 +27,14 @@ class DrawingEditor {
         this.canvas = new fabric.Canvas(canvasRef, { selection: false, allowTouchScrolling:false });
 
         this.components = {};
-        this.drawers = [ new LineDrawer() ];
+        this.drawers = [ 
+            new LineDrawer(),
+            new RectangleDrawer(),
+            new OvalDrawer(),
+            new TriangleDrawer(),
+            new TextDrawer(),
+            new PolylineDrawer()
+        ];
         
         //Set the current "drawer" class
         this._drawer = this.drawers[DrawingMode.Line];
@@ -115,6 +126,22 @@ class DrawingEditor {
             case 'line':
                 this.components[component] = new LineDisplayComponent(target, this);
                 break;
+            case 'rect': 
+                this.components[component] =  new RectangleDisplayComponent(target, this);
+                break;
+            case 'oval':
+                this.components[component] =  new OvalDisplayComponent(target, this);
+                break;
+            case 'triangle':
+                this.components[component] =  new TriangleDisplayComponent(target, this);
+                break;
+            case 'text':
+                //New component
+                this.components[component]  = new TextDisplayComponent(target, this);
+                break;
+            case 'polyline':
+                this.components[component]  = new PolylineDisplayComponent(target, this);
+                break;
         }
 
     }
@@ -122,7 +149,6 @@ class DrawingEditor {
     componentSelected(componentName: string) {
         //Deselect any objects on the canvas that are selected
         this.canvas.discardActiveObject();
-        
         //FOREACH component in the drawing editor...
         for (var key in this.components) {
         

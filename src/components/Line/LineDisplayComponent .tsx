@@ -1,7 +1,7 @@
 import { FaBeer } from 'react-icons/fa';
-import { DisplayComponent, DisplayComponentOptions } from "./DisplayComponent";
-import DrawingEditor from "./DrawingEditor";
-import { DrawingMode } from "./Interface";
+import { DisplayComponent, DisplayComponentOptions } from "../DisplayComponent";
+import DrawingEditor from "../DrawingEditor";
+import { DrawingMode } from "../Interface";
 
 
 export default class LineDisplayComponent extends DisplayComponent {

@@ -23,7 +23,12 @@ const Home: React.FC = () => {
             var canvasWidth: number = window.innerWidth;
             drawingEditor = new DrawingEditor(canvasRef.current!, canvasHeight, canvasWidth);
             const components: DrawAddComponent = [
-                { id: 'lineDisplayComponent', type: 'line' }
+                { id: 'lineDisplayComponent', type: 'line' },
+                { id: 'rectangleDisplayComponent', type: 'rect' },
+                { id: 'ovalDisplayComponent', type: 'oval' },
+                { id: 'triangleDisplayComponent', type: 'triangle' },
+                { id: 'textDisplayComponent', type: 'text' },
+                { id: 'polylineDisplayComponent', type: 'polyline' }
             ];
             //Add the components to the DrawingEditor, which will render them.
             drawingEditor.addComponents(components);
@@ -36,7 +41,12 @@ const Home: React.FC = () => {
                 <IonToolbar>
                     <IonTitle>DrawPAD</IonTitle>
                     <IonButtons slot="primary">
-                        <div id="lineDisplayComponent"></div>
+                        <div id="polylineDisplayComponent" />
+                        <div id="lineDisplayComponent" />
+                        <div id="rectangleDisplayComponent" />
+                        <div id="ovalDisplayComponent" />
+                        <div id="triangleDisplayComponent" />
+                        <div id="textDisplayComponent" />
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>

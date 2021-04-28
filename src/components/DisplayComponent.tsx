@@ -31,8 +31,11 @@ class DisplayComponent {
     //This method replaces the target HTML with the component's HTML.
     //The radio button is included to have Bootstrap use the correct styles.
     render() {
-        const ionicHtml = `<IonButton onClick={selectedOption}> ${this.hoverText} </IonButton>`;
-        document.getElementById(this.target)!.replaceWith(ionicHtml);
+        const ionicHtml:string = `<label id="${this.target}" class="btn btn-primary text-light " title="${this.hoverText}">
+        <input type="radio" name="options" autocomplete="off">
+            ${this.svg}
+        </label>`;
+        document.getElementById(this.target)!.innerHTML = ionicHtml;
     }
 
     //This method attaches the componentSelected event in DrawingEditor
@@ -44,17 +47,15 @@ class DisplayComponent {
         };
 
         //When clicking the <label>, fire this event.
-        // this.target.click(data, function () {
-        //     data.container.drawingMode = data.mode;
-        //     data.container.componentSelected(data.target);
-        // });
+        document.getElementById(this.target)!.addEventListener("click", function () {
+            data.container.drawingMode = data.mode;
+            data.container.componentSelected(data.target);
+        });
     }
 
-    selectedOption(data:any) {
-        console.log(data);
+    selectedChanged(componentName: string) {
+        
     }
-
-    selectedChanged(componentName: string) { }
     
 }
 
