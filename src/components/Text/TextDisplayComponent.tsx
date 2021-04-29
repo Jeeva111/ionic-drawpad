@@ -17,7 +17,8 @@ export default class TextDisplayComponent extends DisplayComponent {
     render(): void {
         super.render();
         //We need to render a hidden textbox next to the text button.
-        //$(this.target).parent().append(`<input id="${this.childName}" class="col-sm-6 form-control hidden" />`);
+        var inputElement = document.getElementById(this.target) as HTMLInputElement;
+        inputElement.parentElement!.insertAdjacentHTML('afterend', `<input id="${this.childName}" class="col-sm-6 form-control hidden" />`);
     }
 
     //The two methods below, selectionUpdated and selectedChanged,
@@ -26,7 +27,7 @@ export default class TextDisplayComponent extends DisplayComponent {
     
     //Show the textbox if the text button is selected
     selectionUpdated(newTarget: string) {
-        //$(newTarget).removeClass('hidden');
+        document.getElementById(newTarget)?.classList.remove('hidden');
     }
 
     selectedChanged(componentName: string): void {

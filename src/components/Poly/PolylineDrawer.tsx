@@ -9,7 +9,7 @@ class PolylineDrawer implements IObjectDrawer {
         return new Promise<fabric.Object>(resolve => {
             resolve(new fabric.Polyline(
                 [{ x, y }],
-                { ...options, fill: 'transparent' }
+                { ...options, fill: 'transparent', evented:false }
             ));
         });
     }

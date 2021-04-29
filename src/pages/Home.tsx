@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { IonButton, IonButtons, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonIcon, IonPage, isPlatform, IonTitle, IonToolbar } from '@ionic/react';
+import React, { useRef, useEffect, useState } from 'react';
+import { IonButton, IonButtons, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonIcon, IonPage, isPlatform, IonTitle, IonToolbar, IonRow, IonRadioGroup, IonList, IonItem, IonRadio, IonLabel, IonListHeader } from '@ionic/react';
 import DrawingEditor from '../components/DrawingEditor';
 import { DrawAddComponent } from '../components/Interface';
 import './Home.css';
@@ -9,6 +9,7 @@ const Home: React.FC = () => {
     var canvasRef = useRef<HTMLCanvasElement>(null);
     var ionContentRef = useRef<HTMLIonContentElement>(null);
     var drawingEditor: DrawingEditor | null = null;
+    const [forceUpdate, setForceUpdate] = useState<boolean>(false);
 
     useEffect(() => {
         // This method for getting current height of the ion content element 
@@ -28,7 +29,10 @@ const Home: React.FC = () => {
                 { id: 'ovalDisplayComponent', type: 'oval' },
                 { id: 'triangleDisplayComponent', type: 'triangle' },
                 { id: 'textDisplayComponent', type: 'text' },
-                { id: 'polylineDisplayComponent', type: 'polyline' }
+                { id: 'polylineDisplayComponent', type: 'polyline' },
+                { id: 'deleteComponent', type: 'delete'},
+                { id: 'fillColorComponent', type: 'fillColorChooser' },
+                { id: 'lineColorComponent', type: 'lineColorChooser' }
             ];
             //Add the components to the DrawingEditor, which will render them.
             drawingEditor.addComponents(components);
@@ -47,7 +51,23 @@ const Home: React.FC = () => {
                         <div id="ovalDisplayComponent" />
                         <div id="triangleDisplayComponent" />
                         <div id="textDisplayComponent" />
+                        <div id="deleteComponent" />
                     </IonButtons>
+                    <IonGrid>
+                        <IonRow>
+                            <IonCol>
+                            <div className="btn-toolbar">
+                                <label className="col-form-label controlLabel d-inline">Lines:</label>
+                                <div id="lineColorComponent"></div>
+
+                                <div className="separator"></div>
+
+                                <label className="col-form-label controlLabel ">Fill:</label>
+                                <div id="fillColorComponent"></div>
+                            </div>
+                            </IonCol>
+                        </IonRow>
+                    </IonGrid>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen ref={ionContentRef}>

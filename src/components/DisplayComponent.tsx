@@ -1,4 +1,3 @@
-import React from "react";
 import { IonButton } from "@ionic/react";
 import DrawingEditor from "./DrawingEditor";
 import { DrawingMode } from "./Interface";
@@ -16,6 +15,8 @@ class DisplayComponent {
                        //only used by text components.
     canvasDrawer: DrawingEditor;
 
+    btnComponent: any;
+
     constructor(mode: DrawingMode, selector: string, parent: DrawingEditor, options: DisplayComponentOptions) {
         this.drawingMode = mode;
         this.target = selector; 
@@ -24,6 +25,7 @@ class DisplayComponent {
         this.svg = options.svg;
         this.childName = options.childName;
         this.canvasDrawer = parent;
+        this.btnComponent = null;
         this.render();
         this.attachEvents();
     }
@@ -35,6 +37,7 @@ class DisplayComponent {
         <input type="radio" name="options" autocomplete="off">
             ${this.svg}
         </label>`;
+        this.btnComponent = (<IonButton><p>DisplayComponent</p></IonButton>);
         document.getElementById(this.target)!.innerHTML = ionicHtml;
     }
 

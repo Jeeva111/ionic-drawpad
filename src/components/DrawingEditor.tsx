@@ -7,12 +7,14 @@ import { OvalDrawer, OvalDisplayComponent } from "./Oval/OvalDrawer";
 import { TriangleDisplayComponent, TriangleDrawer } from "./Triangles/TriangleDrawer";
 import { TextDrawer, TextDisplayComponent } from "./Text/TextDrawer";
 import { PolylineDisplayComponent, PolylineDrawer } from "./Poly/PolylineDrawer";
+import { DeleteComponent } from "./Delete/DeleteComponent";
+import ColorChooserComponent from "./Colors/ColorChooserComponent";
 
 class DrawingEditor {
 
     canvas: fabric.Canvas;
 
-    private components: {[key: string] :DisplayComponent};
+    private components: {[key: string] :DisplayComponent | DeleteComponent | ColorChooserComponent};
     private _drawer: IObjectDrawer; //Current drawer
     private cursorMode: CursorMode;
     readonly drawerOptions: fabric.IObjectOptions; //Current drawer options
@@ -82,6 +84,26 @@ class DrawingEditor {
         this.canvas.on('selection:cleared', (o) => {
             this.cursorMode = CursorMode.Draw;
         });
+
+        this.canvas.on('object:selected', (o) => {
+            this.cursorMode = CursorMode.Select;
+            //sets currently selected object
+            this.object = o.target;
+
+            //If the delete component exists, enable it
+            if (this.components['delete'] !== undefined) {
+                (this.components['delete'] as DeleteComponent).enable();
+            }
+        });
+
+        this.canvas.on('selection:cleared', (o) => {
+            //If the delete component exists, disable it
+            if (this.components['delete'] !== undefined) {
+                (this.components['delete'] as DeleteComponent).disable();
+            }
+
+            this.cursorMode = CursorMode.Draw;
+        });
     }
 
     private async mouseDown(x: number, y: number): Promise<any> {
@@ -142,6 +164,23 @@ class DrawingEditor {
             case 'polyline':
                 this.components[component]  = new PolylineDisplayComponent(target, this);
                 break;
+            case 'delete':
+                this.components[component]  = new DeleteComponent(target, this);
+                break;
+            case 'lineColorChooser':
+                this.components[component] =  new ColorChooserComponent(target, this, '#FFFFFF', {
+                        'change': (newColor: string) => {
+                            this.setLineColor(newColor);
+                        }
+                    });
+                break;
+            case 'fillColorChooser':
+                this.components[component] = new ColorChooserComponent(target, this, '', {
+                        'change': (newColor: string) => {
+                            this.setFillColor(newColor);
+                        }
+                    });
+                break;
         }
 
     }
@@ -157,22 +196,43 @@ class DrawingEditor {
             if (!this.components.hasOwnProperty(key)) continue;
 
             //OTHERWISE...
-            const obj: DisplayComponent = this.components[key];
+            const obj: DisplayComponent | DeleteComponent | ColorChooserComponent = this.components[key];
 
             //IF the component with the passed-in name
             //IS the component we expect
-            if (obj.target === componentName) {
-                //SET the drawing mode to the drawing mode
-                //needed by the component
-                this.drawingMode = obj.drawingMode;
-            }
+            if(obj instanceof DisplayComponent) {
+                if (obj.target === componentName) {
+                    //SET the drawing mode to the drawing mode
+                    //needed by the component
+                    this.drawingMode = obj.drawingMode;
+                }
 
-            //IF the method selectedChanged is defined on the component,
-            //THEN call that method
-            if (obj.selectedChanged !== undefined) {
-                obj.selectedChanged(componentName);
+                //IF the method selectedChanged is defined on the component,
+                //THEN call that method
+                if (obj.selectedChanged !== undefined) {
+                    obj.selectedChanged(componentName);
+                }
             }
         }
+    }
+
+    deleteSelected(): void {
+        //Get currently-selected object
+        const obj = this.canvas.getActiveObject();
+
+        //Delete currently-selected object
+        this.canvas.remove(this.canvas.getActiveObject());
+        this.canvas.renderAll(); //Re-render the drawing in Fabric
+    }
+
+    //Sets the fill color of the brush
+    setFillColor(color: string): void {
+        this.drawerOptions.fill = color;
+    }
+
+    //Sets the "stroke" or line color of the brush
+    setLineColor(color: string): void {
+        this.drawerOptions.stroke = color;
     }
 
 }

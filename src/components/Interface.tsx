@@ -1,3 +1,7 @@
+import ColorChooserComponent from "./Colors/ColorChooserComponent";
+import { DeleteComponent } from "./Delete/DeleteComponent";
+import { DisplayComponent } from "./DisplayComponent";
+
 enum DrawingMode {
     Line,
     Rectangle,
@@ -20,6 +24,8 @@ type DrawAddComponent = {
     type: string;
 }[];
 
+type IDisplayComponent = DisplayComponent | DeleteComponent | ColorChooserComponent;
+
 interface IObjectDrawer {
     drawingMode: DrawingMode;
     //Makes the current object
@@ -33,5 +39,5 @@ interface IObjectDrawer {
     readonly resize: (object: IObjects, x: number, y: number)  => Promise<fabric.Object>;
 }
 
-export type { IObjectDrawer, IObjects, DrawAddComponent };
+export type { IObjectDrawer, IObjects, DrawAddComponent, IDisplayComponent };
 export { DrawingMode, CursorMode };
