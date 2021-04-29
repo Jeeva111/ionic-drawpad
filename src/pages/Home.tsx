@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { Gestures } from "react-gesture-handler";
 import { fabric } from 'fabric';
 import { FaPencilAlt } from 'react-icons/fa';
 import { IonButton, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
@@ -17,6 +18,10 @@ const Home: React.FC = () => {
         isDragging: false,
         lastPosX: 0,
         lastPosY: 0
+    }
+    var touchEvents: {[key:string]:any} = {
+        scale: 1,
+        lastScale: 1
     }
 
     // Local States
@@ -41,7 +46,7 @@ const Home: React.FC = () => {
             isDrawingMode:true,
             height: percentageToPixel(84),
             width: percentageToPixel(96, window.screen.width),
-            selection:false
+            allowTouchScrolling:false
         });
         eventHandler(canvasObj);
         setCanvas(canvasObj);
@@ -90,9 +95,8 @@ const Home: React.FC = () => {
     }
 
     const drawingMode = (): void => {
-
         if(!canvasObj) { canvasObj = canvas!; }
-        canvasObj.freeDrawingBrush.color = "#FFF";
+        canvasObj.freeDrawingBrush.color = "#000";
     }
 
     const getDrawCursor = () => {
@@ -122,6 +126,13 @@ const Home: React.FC = () => {
         canvasObj.on("mouse:up",onMouseUp);
         canvasObj.on("mouse:move",onMouseMove);
         canvasObj.on("mouse:wheel",onMouseWheel);
+        // canvasObj.on("touch:gesture", touchPressHandler);
+    }
+
+    const touchPressHandler = (opt: any) => {
+        opt.e.preventDefault();
+        opt.e.stopPropagation();
+        console.log(opt.e);
     }
 
     const onMouseDown = (opt:any) => {
@@ -172,8 +183,29 @@ const Home: React.FC = () => {
         canvasObj.zoomToPoint(zoomPoint, zoom);
         opt.e.preventDefault();
         opt.e.stopPropagation();
-        
+
     }
+
+    const touchPinchZoom = (event: HammerInput) => {
+        touchEvents.scale = 1;
+        if (event.type == "pinch") {
+            touchEvents.scale = Math.max(.999, Math.min(touchEvents.lastScale * (event.scale), 4));
+        }
+        if(!canvasObj) { canvasObj = canvas!; }
+        var zoomPoint = new fabric.Point(event.center.x, event.center.y);
+        canvasObj.zoomToPoint(zoomPoint, touchEvents.scale);
+        event.preventDefault();
+    }
+
+    const touchPinchStart = (event: HammerInput) => {
+        canvasObj.isDrawingMode = false;
+    }
+
+    const touchPinchEnd = (event: HammerInput) => {
+        touchEvents.lastScale = touchEvents.scale;;
+    }
+
+
 
     return (
         <IonPage>
@@ -186,7 +218,19 @@ const Home: React.FC = () => {
                 <IonGrid style={{padding:0}}>
                     <IonRow>
                         <IonCol size="11">
+                            <Gestures
+                                recognizers={{
+                                    Pinch: {
+                                        events: {
+                                            pinchstart: touchPinchStart,
+                                            pinchend: touchPinchEnd,
+                                            pinch: touchPinchZoom
+                                        }
+                                    }
+                                }}
+                            >
                             <canvas ref={canvasRef} className="canvas" />
+                            </Gestures>
                         </IonCol>
                         <IonCol style={{textAlign:"center"}}>
                             <RenderUIOptions onPress={selectedOption} />
